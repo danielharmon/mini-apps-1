@@ -1,24 +1,38 @@
 <!DOCTYPE html>
 <html>
+  <style>
+    table {
+      border: 1px solid black;
+      width: 50%;
+      height: 400px;
+      table-layout: fixed;
+    }
+    td {
+      border: 1px solid black;
+      height: 33%;
+      text-align: center;
+      width: 33%;
+    }
+  </style>
   <title>TicTacToe</title>
   <head>TicTacToe</head>
   <body>
-    <table border="1" width="50%" style="height: 400px" cellspacing="5">
+    <table id="board">
       <caption>Player X's Turn</caption>
       <tr>
-        <td class="box"height="33%"align="center"></td>
-        <td class="box"height="33%"align="center"></td>
-        <td class="box"height="33%"align="center"></td>
+        <td id="1"></td>
+        <td id="2"></td>
+        <td id="3"></td>
       </tr>
       <tr>
-        <td class="box"height="33%"align="center"></td>
-        <td class="box"height="33%"align="center"></td>
-        <td class="box"height="33%"align="center"></td>
+        <td id="4"></td>
+        <td id="5"></td>
+        <td id="6"></td>
       </tr>
       <tr>
-        <td class="box"height="33%"align="center"></td>
-        <td class="box"height="33%"align="center"></td>
-        <td class="box"height="33%"align="center"></td>
+        <td id="7"></td>
+        <td id="8"></td>
+        <td id="9"></td>
       </tr>
     </table>
     <button>RESET GAME</button>
