@@ -1,18 +1,42 @@
 const express = require('express')
 const app = express();
 const port = 8080
-const bodyParser = require('body-parser')
+const path = require('path')
 
-app.use(express.urlencoded({ extended: true }))
+
+
+var CSVReportGenerator = function(Obj) {
+  var headers = [];
+  var values = [];
+  var recurser = function (object) {
+    var line = []
+    Object.keys(object).forEach(key => {
+
+      if (key != 'children') {
+        if (!headers.includes(key)) {
+          headers.push(key);
+        }
+        line.push(object[key]);
+      } else if (key === 'children') {
+        values.push(line)
+        object.children.forEach(child => {
+          recurser(child);
+        });
+      }
+    })
+  }
+  recurser(Obj);
+  return headers.join(',') + '\n' + values.join('\n');
+}
+app.set('view engine', 'ejs');
+app.use(express.urlencoded({ extended: true }));
 app.get('/', (req, res) => {
-  console.log('Get request received')
-  console.log(req.body["JSON"])
-  res.send('Hello World!')
+  res.render('index')
 })
 app.post('/', (req, res) => {
-  console.log('Post Request Received', req.body["JSON"])
-  //Convert to CSV and send back
-  res.send('Success')
+  var values = JSON.parse(req.body["JSON"])
+  res.render('index', {data: CSVReportGenerator(values)})
+
 })
 
 app.listen(port, () => {
