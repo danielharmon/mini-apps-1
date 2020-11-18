@@ -2,6 +2,8 @@ const express = require('express')
 const app = express();
 const port = 8080
 const path = require('path')
+const multer = require('multer')
+var upload = multer()
 
 
 
@@ -29,16 +31,17 @@ var CSVReportGenerator = function(Obj) {
   return headers.join(',') + '\n' + values.join('\n');
 }
 app.set('view engine', 'ejs');
-app.use(express.urlencoded({ extended: true }));
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", '*')
+  next()
+})
 app.get('/', (req, res) => {
   res.render('index')
 })
-app.post('/', (req, res) => {
-  var values = JSON.parse(req.body["JSON"])
-  res.render('index', {data: CSVReportGenerator(values)})
-
+app.post('/uploads', upload.single('JSON'), (req, res) => {
+  console.log('💾', req.file)
+  res.send(CSVReportGenerator(req.file.buffer.toString(req.file.encoding)))
 })
-
 app.listen(port, () => {
   console.log(`CSV Generator is listening on port ${port}`)
 })

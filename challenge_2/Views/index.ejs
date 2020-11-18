@@ -3,8 +3,8 @@
 <html>
   <head>Insert JSON in text field</head>
   <body>
-    <form action="http://localhost:8080" method="POST">
-      <input type="textarea" name="JSON">
+    <form action="http://localhost:8080/uploads" method="POST" enctype="multipart/form-data">
+      <input type="file" name="JSON">
       <input type="submit">
     </form>
     <div class="data"style="white-space: pre-line"><%= typeof data != 'undefined' ? data : 'CSV Report will display here' %></div>
