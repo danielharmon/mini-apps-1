@@ -14,6 +14,9 @@
       success: function(text) {
         console.log($('.data'))
         $('.data').text(text)
+        var file = new Blob([text], {type: 'text/plain'})
+        $('a').attr('href', URL.createObjectURL(file))
+        $('a').attr('download', 'CSV.txt')
       }
     })
   })
