@@ -12,8 +12,8 @@
       contentType: false,
       processData: false,
       success: function(text) {
-        alert ('success')
-        console.log(text)
+        console.log($('.data'))
+        $('.data').text(text)
       }
     })
   })

@@ -40,7 +40,7 @@ app.get('/', (req, res) => {
 })
 app.post('/uploads', upload.single('JSON'), (req, res) => {
   console.log('💾', req.file)
-  res.send(CSVReportGenerator(req.file.buffer.toString(req.file.encoding)))
+  res.send(CSVReportGenerator(JSON.parse(req.file.buffer.toString())));
 })
 app.listen(port, () => {
   console.log(`CSV Generator is listening on port ${port}`)
