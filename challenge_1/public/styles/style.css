@@ -1,0 +1,16 @@
+/* My Styles */
+table {
+  border: 1px solid black;
+  width: 50%;
+  height: 400px;
+  table-layout: fixed;
+}
+td {
+  border: 1px solid black;
+  height: 33%;
+  text-align: center;
+  width: 33%;
+}
+.controls {
+  width:50%;
+}
