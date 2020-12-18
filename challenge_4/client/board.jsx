@@ -86,19 +86,27 @@ class Board extends React.Component {
       }
       return true;
     }
+    var checkTie = () => {
+
+    }
     var won = undefined;
+    var tie = true;
     board.forEach((row, i) => {
       row.forEach((piece, j) => {
+        if(board[i][j] === 0) {tie = false}
         if(board[i][j] !== 0) {
           if (checkDown(i, j) || checkUp(i, j) || checkLeft(i,j) || checkRight(i,j) || checkMajorDiags(i,j) || checkMinorDiags(i,j)) { won = board[i][j] }
         }
       })
     })
-    return won;
+    if (tie && won === undefined) {
+      return 'tie'
+    } else return won
   }
 
   render() {
     var won = this.state.winner > 0 ? 'red' : 'yellow'
+    if(this.state.winner === 'tie') { won = 'tie'}
     var boardView = this.state.board.map((row, i) => {
       var pieces = row.map((col, j) => {
         if (col === 0) { return <td><div id={`${i}${j}`} className="white"></div></td> }
