@@ -1,6 +1,5 @@
 import React from 'react'
-import Red from './red.jsx'
-import Yellow from './yellow.jsx'
+
 
 class Board extends React.Component {
   constructor(props) {
@@ -15,7 +14,15 @@ class Board extends React.Component {
         [0,0,0,0,0,0,0],
         [0,0,0,0,0,0,0],
       ],
-      winner: undefined
+      winner: undefined,
+      emptyBoard: [
+        [0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0],
+      ],
     }
     this.onClick = this.onClick.bind(this);
     this.checkBoardForWin = this.checkBoardForWin.bind(this);
@@ -26,9 +33,8 @@ class Board extends React.Component {
     for (let i = board.length - 1; i >= 0; i--) {
       if(board[i][col] === 0) {
         this.state.turn === 'red' ? board[i][col]++ : board[i][col]--
-        console.log(`${board[i][col]} i is ${i} col is ${col}`)
         this.setState({board: board})
-        var winner = checkBoardForWin();
+        var winner = this.checkBoardForWin();
         this.setState({winner: winner})
         this.state.turn === 'red' ? this.setState({turn: 'yellow'}) : this.setState({turn: 'red'})
         break;
@@ -39,49 +45,60 @@ class Board extends React.Component {
   checkBoardForWin() {
     var board = this.state.board
     var checkLeft = (i, j) => {
-      for (let k = i; k > i-5;k--) {
-        if(board[k][j] !== board[i][j] || k < 0) { return false; }
+      for (let k = j; k > j-4;k--) {
+        if(k < 0 || board[i][k] !== board[i][j]) { return false; }
       }
       return true;
     }
     var checkRight = (i, j) => {
-      for (let k = i; k < i+5;k++) {
-        if(board[k][j] !== board[i][j] || k > 7) { return false; }
-      }
-      return true;
-    }
-    var checkUp = (i, j) => {
-      for (let k = i; k < i+5;k++) {
-        if(board[i][k] !== board[i][j] || k > 6) { return false; }
+      for (let k = j; k < j+4;k++) {
+        if(k > 5 || board[i][k] !== board[i][j]) { return false; }
       }
       return true;
     }
     var checkDown = (i, j) => {
-      for (let k = j; k < j-5;k--) {
-        if(board[i][k] !== board[i][j] || j < 0) { return false; }
+      for (let k = i; k < i+4;k++) {
+        if(k > 5 || board[k][j] !== board[i][j]) { return false; }
+      }
+      return true;
+    }
+    var checkUp = (i, j) => {
+      for (let k = i; k > i-4;k--) {
+        if(k < 0 || board[k][j] !== board[i][j]) { return false; }
       }
       return true;
     }
     var checkMajorDiags = (i, j) => {
-      for (let k = i; k < i+5; k++) {
-        if(board[k][k] !== board[i][j] || k > 6) {return false;}
+      if (i < 3 || j > 3) { return false;}
+      var col = j
+      for (let row = i; row > i-4; row--) {
+        if (board[row][col] !== board[i][j]) {return false}
+        col++;
       }
       return true;
     }
     var checkMinorDiags = (i, j) => {
-      for (let k = i; k < i-5; k--) {
-        if(board[k][k] !== board[i][j] || k < 0) {return false;}
+      if (j < 3 || i > 2) { return false; }
+      var col = j
+      for (let k = i; k < i+4; k++) {
+        if(board[k][col] !== board[i][j] || k < 0) {return false;}
+        col++;
       }
       return true;
     }
+    var won = undefined;
     board.forEach((row, i) => {
       row.forEach((piece, j) => {
-        if (checkDown(i, j) || checkUp(i, j) || checkLeft(i,j) || checkRight(i,j) || checkMajorDiags(i,j) || checkMinorDiags(i,j)) { return board[i][j] }
+        if(board[i][j] !== 0) {
+          if (checkDown(i, j) || checkUp(i, j) || checkLeft(i,j) || checkRight(i,j) || checkMajorDiags(i,j) || checkMinorDiags(i,j)) { won = board[i][j] }
+        }
       })
     })
+    return won;
   }
 
   render() {
+    var won = this.state.winner > 0 ? 'red' : 'yellow'
     var boardView = this.state.board.map((row, i) => {
       var pieces = row.map((col, j) => {
         if (col === 0) { return <td><div id={`${i}${j}`} className="white"></div></td> }
@@ -91,7 +108,6 @@ class Board extends React.Component {
       return (
       <tr>{pieces}</tr>)
     })
-    var won = this.state.winner > 0 ? 'red' : 'yellow'
     return (
       <table >
         {!this.state.winner &&
@@ -113,7 +129,15 @@ class Board extends React.Component {
         {this.state.winner &&
         <thead>
         <tr>
-          <th colSpan="7">Connect Four     WINNER!!!: {won}</th>
+          <th colSpan="7">Connect Four     WINNER!!!: {won}<button onClick={()=> {
+              this.setState({winner: undefined, turn: 'red', board: [
+                [0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0],
+              ]})}}>Reset</button></th>
         </tr>
         </thead>
         }
